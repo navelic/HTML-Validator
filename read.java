@@ -1,12 +1,11 @@
 import java.io.*;
 public class read {
-
 	public static void main(String[] args)throws IOException
 	{
 		int line=0;
 		String content="";
 		try{
-			BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Naveli\\Desktop\\portfolio.html"));
+			BufferedReader in = new BufferedReader(new FileReader("E:\\portfolio.html"));
 	        String str;
 	        while ((str = in.readLine()) != null) {
 	            content +=str+"\n";
@@ -20,7 +19,7 @@ public class read {
 			System.out.println("file not found");
 			
 		}int k=0,i=0;
-		String arr[]=new String[line];
+		String arr[]=new String[line];  //storing each line separately
 		while(i<line)
 		{
 			for(int j=0;j<content.length();j++)
@@ -32,37 +31,42 @@ public class read {
 			k=j+1;
 			}}
 		}
-		String s="",s1="",w="";content=content+" ";
-		int d;
-		for(int a=0;a<line;a++)
+		String tagname="",subsent="",closetag="",subsentclose="";content=content+" ";
+		int ind,index;
+		for(int lineno=0;lineno<line;lineno++)
 		{
-			for(int c=0;c<arr[a].length()-1;c++)
+			for(int letter=0;letter<arr[lineno].length()-1;letter++)
 			{
-				s="";s1="";
-				if(arr[a].charAt(c)=='<' && arr[a].charAt(c+1)!='/' && arr[a].charAt(c+1)!='!')
+				tagname="";subsent="";
+				if(arr[lineno].charAt(letter)=='<' && arr[lineno].charAt(letter+1)!='/' && arr[lineno].charAt(letter+1)!='!')
 				{
-					s1=arr[a].substring(c+1);
-					d=s1.indexOf('>');
-					s=arr[a].substring(c+1,d);
-					s=s.substring(0,s.indexOf(' '));
-				    if(s!="br" || s!="area" || s!="base" || s!="col" || s!="command" || s!="embed" || s!="hr" || s!="img" || s!="input" || s!="keygen" || s!="meta" || s!="link" || s!="menuitem" || s!="param" || s!="source" || s!="track" || s!="wbr")
+					subsent=arr[lineno].substring(letter+1);
+					ind=subsent.indexOf('>');
+					tagname=subsent.substring(0,ind);
+					tagname=tagname+" ";
+					tagname=tagname.substring(0,tagname.indexOf(' '));
+				    if(tagname!="br" && tagname!="area" && tagname!="base" && tagname!="col" && tagname!="command" && tagname!="embed" && tagname!="hr" && tagname!="img" && tagname!="input" && tagname!="keygen" && tagname!="meta" && tagname!="link" && tagname!="menuitem" && tagname!="param" && tagname!="source" && tagname!="track" && tagname!="wbr")
 				    {
-				    	w="";
-				    for(int e=d;e<content.length();e++)
+				    for(int e=0;e<(content.length()-2);e++)
 				    {
-				    	if(content.charAt(e)!=' ' || content.charAt(e)!='<' || content.charAt(e)!='>')
+				    	if(content.charAt(e)=='<' && content.charAt(e+1)=='/')
 				    	{
-				    		w=w+content.charAt(e);
-				    	}
-				    	else{
-				    		if(w.equals("/"+s))
+				    		closetag=content.substring(e+2);
+				    		index=closetag.indexOf('>');
+				    		subsentclose=closetag.substring(0,index);
+				    		if(subsentclose.equals(tagname))
+				    		{
 				    			break;
+				    		}
 				    	}
-				    	if(e==content.length()-1)
-				    		System.out.println("Closing tag missing in line "+(a+1));
+				    	if(e==content.length()-3)
+				    	{
+				    		System.out.println(tagname+" tag not closed in line "+(lineno+1));
+				    	}
 				    }
 				    }
-		    	}}
+		    	}
+				}
 	    }
      }
 }
